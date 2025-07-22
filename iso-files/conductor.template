@@ -1,0 +1,10 @@
+{
+	  "mode": "conductor",
+	  "clustered": false,
+	  "node-name": "node0",
+	  "dns-servers": ["8.8.8.8"],
+          "name": "CONDUCTOR_NAME",
+	  "node-ip": "CONDUCTOR_IP",
+          "node-gateway": "CONDUCTOR_GW",
+          "interface-name": "CONDUCTOR_INTF"
+}

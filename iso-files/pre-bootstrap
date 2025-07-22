@@ -1,0 +1,3 @@
+#!/bin/bash
+# Add commands to run prior to the bootstrap process
+echo "....Nothing to do in pre-bootstrap..."

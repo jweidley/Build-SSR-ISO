@@ -1,0 +1,8 @@
+{
+	  "mode": "conductor-managed",
+	  "conductor-hosts": ["CONDUCTOR_IP"],
+	  "dns-servers": ["DNS_SVR"],
+	  "name": "ROUTER_NAME"
+}
+
+

@@ -1,0 +1,12 @@
+#!/bin/bash
+# Remove Welcome from default SSR banner
+cat /etc/motd | grep -v Welcome > /etc/motd
+
+# Set admin password
+echo -e "Juniper123!\nJuniper123!" | passwd admin
+
+# Disable inactivity timeout
+echo " " >> /etc/bashrc
+echo "# Disable inactivity timeout - lab use only! " >> /etc/bashrc
+echo "TMOUT=0" >> /etc/bashrc
+
