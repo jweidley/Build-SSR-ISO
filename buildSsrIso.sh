@@ -1,14 +1,12 @@
 #!/bin/bash
 # Purpose: MacOS: Build a custom ISO for SSR image-based deployments (6.x)
-# Version: 0.4 
+# Version: 0.4.1
 #--------- Changelog-------------
-# 0.4 - 16Jul25 - MacOS/EVE version
-# 0.3 - 14Jul25 - autocopy cdrom.iso to the end location
-# 0.2 - 10Jul25 - Added prompts & defaults for values
-# 0.1 - Initial script from Larry Sherrow
-############################################################################################
-# TODO
-# 1. check for genisoimage & maybe hdiutil packages, fail if not installed & provide a hint.
+# 0.4.1 - 23Jul25 - Cleanup
+# 0.4   - 16Jul25 - MacOS/EVE version
+# 0.3   - 14Jul25 - autocopy cdrom.iso to the end location
+# 0.2   - 10Jul25 - Added prompts & defaults for values
+# 0.1   - Initial script from Larry Sherrow
 ############################################################################################
 
 #############
@@ -27,6 +25,7 @@ ROUTER_NAME="Herndon"
 # Functions
 #############
 buildConductor () {
+	echo "---------------------------------------------------------------------------"
         # Set default variables
         TEMPLATE='./iso-files/conductor.template'
 
@@ -74,6 +73,7 @@ buildConductor () {
 }
 
 buildRouter () {
+	echo "---------------------------------------------------------------------------"
         # Set default variables
         TEMPLATE='./iso-files/router.template'
 
@@ -112,20 +112,16 @@ buildRouter () {
 }
 
 buildISO () {
+	echo "---------------------------------------------------------------------------"
 	echo "- Removing old cdrom.iso"
 	if [ -f cdrom.iso ]; then rm -f cdrom.iso; fi
 
          if [ "$OS" = "Darwin" ]; then
 	   echo "- Building ISO (MacOS)..."
-	   hdiutil makehybrid -iso -joliet -iso-volume-name "BOOTSTRAP" -joliet-volume-name "BOOTSTRAP" -o cdrom.iso iso_tmp
-            # Below seems correct but the volumn name is iso_tmp so the bootstrap fails
-	   #hdiutil makehybrid -iso -joliet -iso-volume-name "BOOTSTRAP" -o cdrom.iso iso_tmp
-            # UDF doesnt work, the SSR VM doesnt bootstrap even though the volumn name is BOOTSTRAP
-	   #hdiutil makehybrid -iso -udf -iso-volume-name "BOOTSTRAP" -udf-volume-name "BOOTSTRAP" -o cdrom.iso iso_tmp
-	   #hdiutil makehybrid -o "output.iso" "iso_tmp/" -volname BOOTSTRAP -iso -joliet
+	   $HDIUTIL makehybrid -iso -joliet -iso-volume-name "BOOTSTRAP" -joliet-volume-name "BOOTSTRAP" -o cdrom.iso iso_tmp
          elif [ "$OS" = "Linux" ]; then
 	   echo "- Building ISO (Linux)..."
-	   genisoimage -o cdrom.iso -J -R -V BOOTSTRAP iso_tmp/
+	   $GENISOIMAGE -o cdrom.iso -J -R -V BOOTSTRAP iso_tmp/
          fi
 
 	echo "- Cleaning up"
@@ -154,6 +150,7 @@ buildISO () {
 }
 
 copyISO () {
+	echo "---------------------------------------------------------------------------"
         echo "- Where should the new ISO be copied? Select the destination folder: "
         ls -ld /opt/unetlab/addons/qemu/128T*
 
@@ -180,8 +177,20 @@ UNAME=$(uname)
 
 if [ "$UNAME" = "Darwin" ]; then
     OS="Darwin"
+    if [[ -f /usr/bin/hdiutil ]]; then
+        HDIUTIL='/usr/bin/hdiutil'
+    else
+        echo "ERROR: hdiutil is required to build the ISO and appears to NOT be installed. Exiting!"
+        exit 1
+    fi
 elif [ "$UNAME" = "Linux" ]; then
     OS="Linux"
+    if [[ -f /usr/bin/genisoimage ]]; then
+        GENISOIMAGE='/usr/bin/genisoimage'
+    else
+        echo "ERROR: genisoimage is required to build the ISO and appears to NOT be installed. Exiting!"
+        exit 1
+    fi
 fi
 
 echo "################################################"
