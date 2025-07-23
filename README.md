@@ -14,7 +14,7 @@ The change to image-based deployments introduce a number of foundational changes
 
 ## Troubleshooting
 ### How to verify the ISO
-mkdir /mnt/iso
-mount -o loop cdrom.iso /mnt/iso
+- mkdir /mnt/iso
+- mount -o loop cdrom.iso /mnt/iso
 
 ## End of file
